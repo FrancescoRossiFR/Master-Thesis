@@ -1,0 +1,26 @@
+{
+    "id": "B9BF8C88",
+    "path": "~/GitHub/Master-Thesis/R/master.R",
+    "project_path": "R/master.R",
+    "type": "r_source",
+    "hash": "3340979336",
+    "contents": "",
+    "dirty": false,
+    "created": 1778255908568.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "23,19",
+        "scrollLine": "3"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1778256012,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1778256012523,
+    "read_only": false,
+    "read_only_alternatives": []
+}
