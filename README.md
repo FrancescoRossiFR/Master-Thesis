@@ -24,11 +24,10 @@ The `master.R` script will:
 - Run OLS, Fixed Effects, and Instrumental Variable (IV) models.
 - Export all descriptive and analytical plots to the `output/` folder.
 
-## 🛠 Methodology Summary
+## Methodology Summary
 
 - **Identification**: Superstar cities are identified through price-to-quantity growth ratios.
-- **Robustness**: The analysis is performed both including and excluding the COVID-19 period (2020-2022).
-- **Causal Strategy**: Uses WWII destruction shares as an instrument for modern housing supply inelasticity.
+- **Robustness**: The analysis is performed both including and excluding the COVID-19 period (2020-2023). Uses WWII destruction shares as an instrument for modern housing supply inelasticity.
 
 ## Key Dependencies
 
@@ -38,5 +37,4 @@ The `master.R` script will:
 - `patchwork`: Multi-panel figure composition.
 
 ---
-**Author:** Francesco Rossi  
-**Contact:** [Your Email/Github Profile]
+**Author:** Francesco Rossi
