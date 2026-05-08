@@ -1,0 +1,27 @@
+\begin{table}
+\centering
+\begin{tblr}[         %% tabularray outer open
+]                     %% tabularray outer close
+{                     %% tabularray inner open
+colspec={Q[]Q[]Q[]Q[]Q[]Q[]Q[]Q[]Q[]},
+hline{2}={1-9}{solid, black, 0.05em},
+hline{8}={1-9}{solid, black, 0.05em},
+hline{1}={1-9}{solid, black, 0.1em},
+hline{13}={1-9}{solid, black, 0.1em},
+column{2-9}={}{halign=c},
+column{1}={}{halign=l},
+}                     %% tabularray inner close
+& Static Pooled (Incl) & Static Time (Incl) & Lagged Pooled (Incl) & Lagged Time (Incl) & Static Pooled (Excl) & Static Time (Excl) & Lagged Pooled (Excl) & Lagged Time (Excl) \\
+Superstar (Ever) & \num{0.304}*** &  & \num{0.327}*** &  & \num{0.275}*** &  & \num{0.299}*** &  \\
+& (\num{0.072}) &  & (\num{0.072}) &  & (\num{0.066}) &  & (\num{0.065}) &  \\
+Superstar &  & \num{0.193}** &  & \num{-0.059} &  & \num{0.227}** &  & \num{-0.040} \\
+&  & (\num{0.064}) &  & (\num{0.063}) &  & (\num{0.084}) &  & (\num{0.061}) \\
+Constant & \num{4.312}*** & \num{4.564}*** & \num{4.281}*** & \num{4.632}*** & \num{4.328}*** & \num{4.492}*** & \num{4.298}*** & \num{4.579}*** \\
+& (\num{0.054}) & (\num{0.034}) & (\num{0.056}) & (\num{0.061}) & (\num{0.050}) & (\num{0.027}) & (\num{0.051}) & (\num{0.056}) \\
+Num.Obs. & \num{90} & \num{90} & \num{90} & \num{90} & \num{72} & \num{72} & \num{72} & \num{72} \\
+R2 Adj. & \num{0.695} & \num{0.861} & \num{0.720} & \num{0.835} & \num{0.661} & \num{0.832} & \num{0.689} & \num{0.779} \\
+COVID & Incl & Incl & Incl & Incl & Excl & Excl & Excl & Excl \\
+Identification & Static & Static & Lagged & Lagged & Static & Static & Lagged & Lagged \\
+Fixed effects & Period & Period + City & Period & Period + City & Period & Period + City & Period & Period + City \\
+\end{tblr}
+\end{table}

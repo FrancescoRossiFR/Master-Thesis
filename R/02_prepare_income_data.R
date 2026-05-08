@@ -2,8 +2,8 @@
 # 02_prepare_income_data.R
 #
 # Purpose:
-# Clean and interpolate Eurostat urban income data
-# for selected German cities.
+# Clean and interpolate Eurostat urban income data for 
+# German cities, including national median benchmarking.
 #
 # Inputs:
 # - data/raw/urb_clivcon__custom_20168663_linear.csv
@@ -16,234 +16,109 @@
 ############################################################
 # Libraries
 
-required_packages <- c(
-  "tidyverse",
-  "janitor",
-  "zoo"
-)
-
-invisible(
-  lapply(
-    required_packages,
-    library,
-    character.only = TRUE
-  )
-)
+library(tidyverse)
+library(janitor)
+library(zoo)
 
 ############################################################
-# Constants
+# 1. Constants & Configuration
 
-# Cities included in the analysis
 cities_by_name <- c(
-  "Berlin",
-  "Hamburg",
-  "München",
-  "Köln",
-  "Frankfurt",
-  "Stuttgart",
-  "Düsseldorf",
-  "Dortmund",
-  "Duisburg",
-  "Bonn",
-  "Münster",
-  "Wiesbaden",
-  "Lübeck",
-  "Potsdam",
-  "Erfurt",
-  "Karlsruhe",
-  "Dresden",
-  "Chemnitz"
+  "Berlin", "Hamburg", "München", "Köln", "Frankfurt", "Stuttgart", 
+  "Düsseldorf", "Dortmund", "Duisburg", "Bonn", "Münster", "Wiesbaden", 
+  "Lübeck", "Potsdam", "Erfurt", "Karlsruhe", "Dresden", "Chemnitz", "Germany"
+)
+
+manual_germany_data <- tibble(
+  cities_clean = "Germany",
+  type = "median_income",
+  year = 2012:2019,
+  income_manual = c(23514, 23934, 24363, 24800, 25611, 26448, 27313, 28206)
 )
 
 ############################################################
-# Helper Functions
-
-# ----------------------------------------------------------
-# Interpolate short income gaps
-# ----------------------------------------------------------
-
-interpolate_income <- function(df, max_gap = 3) {
-  
-  df %>%
-    
-    group_by(cities_clean) %>%
-    
-    # Create complete yearly sequence
-    complete(
-      year = seq(
-        min(year),
-        max(year),
-        by = 1
-      )
-    ) %>%
-    
-    arrange(cities_clean, year) %>%
-    
-    mutate(
-      
-      # Missing observations
-      is_na = is.na(income),
-      
-      # Consecutive gap tracking
-      gap_id = cumsum(!is_na),
-      
-      gap_length = ave(
-        is_na,
-        gap_id,
-        FUN = sum
-      ),
-      
-      # Linear interpolation
-      income_interp = zoo::na.approx(
-        income,
-        x = year,
-        na.rm = FALSE
-      ),
-      
-      # Keep interpolation only for short gaps
-      income = ifelse(
-        is_na & gap_length <= max_gap,
-        income_interp,
-        income
-      ),
-      
-      interpolated =
-        is_na & gap_length <= max_gap
-    ) %>%
-    
-    select(
-      cities_clean,
-      year,
-      income,
-      interpolated
-    ) %>%
-    
-    ungroup()
-}
-
-############################################################
-# Load Raw Eurostat Data
+# 2. Load and Initial Cleaning
 
 income_raw <- read_csv(
-  
   "data/raw/urb_clivcon__custom_20168663_linear.csv",
-  
   locale = locale(encoding = "UTF-8"),
-  
   show_col_types = FALSE
-)
-
-############################################################
-# Clean Variable Names
-
-income_raw <- income_raw %>%
+) %>% 
   clean_names()
 
-############################################################
-# Standardize City Names
-
-income_clean <- income_raw %>%
-  
+income_processed <- income_raw %>%
   mutate(
-    
-    cities = iconv(
-      cities,
-      from = "",
-      to = "UTF-8"
-    ),
-    
-    cities_clean =
-      str_remove(cities, " \\(.*\\)") %>%
-      str_trim()
-  )
-
-############################################################
-# Restrict to Selected Cities
-
-income_cities <- income_clean %>%
-  
-  filter(
-    cities_clean %in% cities_by_name
-  )
-
-############################################################
-# Restrict to Target Income Indicator
-
-# Eurostat indicator:
-# "Median disposable annual household income"
-
-income_indicator <- income_cities %>%
-  
-  filter(
-    str_detect(
-      indic_ur,
-      "Median disposable annual household income"
-    )
-  )
-
-############################################################
-# Build Long Income Panel
-
-income_panel <- income_indicator %>%
-  
-  mutate(
-    
+    cities_clean = str_remove(cities, " \\(.*\\)") %>% str_trim(),
     year = as.integer(time_period),
-    
-    income = as.numeric(obs_value)
+    income = as.numeric(obs_value),
+    type = case_when(
+      str_detect(indic_ur, "Median") ~ "median_income",
+      str_detect(indic_ur, "Average") ~ "mean_income",
+      TRUE ~ NA_character_
+    )
   ) %>%
-  
-  select(
-    cities_clean,
-    year,
-    income
+  filter(cities_clean %in% cities_by_name, !is.na(type)) %>%
+  filter(year >= 2000 & year <= 2019) # focus on the window 2000-2019 to have a clean interpolation range given missing data before and after such interval
+
+############################################################
+# 3. Manual Corrections & Interpolation
+
+# Step A: Apply manual Germany overrides
+income_processed <- income_processed %>%
+  left_join(manual_germany_data, by = c("cities_clean", "type", "year")) %>%
+  mutate(income = coalesce(income_manual, income)) %>%
+  select(-income_manual)
+
+# Step B: Interpolation & Extrapolation
+income_panel <- income_processed %>%
+  group_by(cities_clean, type) %>%
+  complete(year = 2000:2019) %>%
+  arrange(year) %>%
+  mutate(
+    # Fill internal gaps up to 5 years
+    income = zoo::na.approx(income, x = year, na.rm = FALSE, maxgap = 5),
+    # Extrapolate to edges (fixes 2000/2001 issue)
+    income = zoo::na.fill(income, fill = "extend")
   ) %>%
-  
-  arrange(
-    cities_clean,
-    year
-  )
+  ungroup()
 
 ############################################################
-# Interpolate Short Gaps
+# 4. Benchmarking & Feature Engineering
 
-income_panel_interpolated <- interpolate_income(
-  income_panel,
-  max_gap = 3
-)
+# Create National Reference
+df_germany_ref <- income_panel %>%
+  filter(cities_clean == "Germany", type == "median_income") %>%
+  # Collapse any potential duplicates in reference data
+  group_by(year) %>%
+  summarize(germany_median = max(income, na.rm = TRUE), .groups = "drop")
+
+income_final <- income_panel %>%
+  # COLLAPSE DUPLICATES: Pivot and then summarize to ensure 1 row per city-year
+  pivot_wider(names_from = type, values_from = income) %>%
+  group_by(cities_clean, year) %>%
+  summarize(
+    mean_income = max(mean_income, na.rm = TRUE),
+    median_income = max(median_income, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  # Fix -Inf values from max(NA)
+  mutate(across(c(mean_income, median_income), ~ifelse(is.infinite(.), NA, .))) %>%
+  # Join national median
+  left_join(df_germany_ref, by = "year") %>%
+  filter(cities_clean != "Germany") %>%
+  group_by(cities_clean) %>%
+  arrange(year) %>%
+  mutate(
+    distance_internal = mean_income / median_income,
+    dist_increased_5y = distance_internal > lag(distance_internal, 4),
+    dist_to_germany = median_income / germany_median
+  ) %>%
+  ungroup()
 
 ############################################################
-# Validation Checks
-
-# Ensure dataset is not empty
-stopifnot(
-  nrow(income_panel_interpolated) > 0
-)
-
-# Ensure no negative incomes
-stopifnot(
-  all(
-    income_panel_interpolated$income >= 0,
-    na.rm = TRUE
-  )
-)
-
-# Display remaining missing values
-remaining_missing <- sum(
-  is.na(income_panel_interpolated$income)
-)
-
-message(
-  "Remaining missing income observations: ",
-  remaining_missing
-)
-
-############################################################
-# Export Processed Dataset
+# 5. Export
 
 write_csv(
-  
-  income_panel_interpolated,
-  
+  income_final, 
   "data/processed/income_panel_interpolated.csv"
 )

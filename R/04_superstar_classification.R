@@ -4,6 +4,8 @@
 # Purpose:
 # Construct superstar-city classifications using
 # housing-price growth and housing-supply elasticity.
+# Data is annual and growth measures are computed over 
+# 5-year windows (endpoint-to-endpoint).
 #
 # Inputs:
 # - data/processed/analysis_panel_apartments.csv
@@ -162,7 +164,17 @@ df %>%
       year == 2024 ~ "2020-2024",
       TRUE ~ NA_character_
     )
-  )
+  ) %>%
+  group_by(city) %>%
+  mutate(
+    # superstar_ever is 1 if the city was a superstar in AT LEAST 2 periods
+    superstar_ever = ifelse(
+      sum(superstar == 1, na.rm = TRUE) >= 2, 
+      1, 
+      0
+    )
+  ) %>%
+  ungroup()
 }
 
 ############################################################
@@ -199,4 +211,40 @@ write_csv(
 write_csv(
   superstar_panel_period,
   "data/processed/superstar_panel_period.csv"
+)
+
+############################################################
+# SINGLE FAMILY HOUSES SECTION
+############################################################
+
+# 1. Load Single Family Analysis Panel
+analysis_panel_sf <- read_csv(
+  "data/processed/analysis_panel_single_family.csv",
+  show_col_types = FALSE
+)
+
+# 2. Build Superstar Panels for Single Family
+# (Using the same logic as apartments)
+
+superstar_panel_global_sf <- prep_superstar_data(
+  analysis_panel_sf,
+  version = "global",
+  sample_type = "incl"
+)
+
+superstar_panel_period_sf <- prep_superstar_data(
+  analysis_panel_sf,
+  version = "period",
+  sample_type = "incl"
+)
+
+# 3. Export Processed Superstar Panels for SF
+write_csv(
+  superstar_panel_global_sf,
+  "data/processed/superstar_panel_global_sf.csv"
+)
+
+write_csv(
+  superstar_panel_period_sf,
+  "data/processed/superstar_panel_period_sf.csv"
 )

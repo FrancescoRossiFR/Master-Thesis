@@ -1,5 +1,8 @@
 ############################################################
-# the final analysis panel used for superstar-city
+# 03_build_analysis_panel.R
+#
+# Purpose:
+# build the final analysis panel used for superstar-city
 # classification and regressions.
 #
 # Inputs:

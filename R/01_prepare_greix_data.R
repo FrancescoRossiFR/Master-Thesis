@@ -408,7 +408,7 @@ panel_single_family <- merge_panel_data(
   
   # Exclusions due to incomplete series coverage
   filter(
-    !city %in% c("München", "Leipzig")
+    !city %in% c("München")
   )
 
 ############################################################

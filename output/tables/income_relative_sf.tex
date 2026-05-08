@@ -1,0 +1,24 @@
+\begin{table}
+\centering
+\begin{tblr}[         %% tabularray outer open
+]                     %% tabularray outer close
+{                     %% tabularray inner open
+colspec={Q[]Q[]Q[]Q[]Q[]},
+hline{2}={1-5}{solid, black, 0.05em},
+hline{8}={1-5}{solid, black, 0.05em},
+hline{1}={1-5}{solid, black, 0.1em},
+hline{10}={1-5}{solid, black, 0.1em},
+column{2-5}={}{halign=c},
+column{1}={}{halign=l},
+}                     %% tabularray inner close
+& Static Pooled & Static Time & Lagged Pooled & Lagged Time \\
+Superstar (Ever) & \num{-0.049} &  & \num{0.013} &  \\
+& (\num{0.048}) &  & (\num{0.061}) &  \\
+Superstar &  & \num{0.023} &  & \num{-0.006} \\
+&  & (\num{0.027}) &  & (\num{0.016}) \\
+Constant & \num{0.025} & \num{-0.083}*** & \num{-0.013} & \num{-0.078}*** \\
+& (\num{0.033}) & (\num{0.010}) & (\num{0.051}) & (\num{0.009}) \\
+Num.Obs. & \num{68} & \num{68} & \num{68} & \num{68} \\
+RMSE & \num{0.10} & \num{0.03} & \num{0.10} & \num{0.03} \\
+\end{tblr}
+\end{table}
