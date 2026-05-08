@@ -1,0 +1,33 @@
+
+\begin{table}[htbp]
+   \caption{\label{tab:iv_results} IV Regression Results for Housing Inelasticity and Prices}
+   \bigskip
+   \centering
+   \begin{tabular}{lcc}
+      \toprule
+                                               & Housing Inelasticity & log\_price\\   
+      IV stages                                & First                & Second \\   
+                                               & (1)                  & (2)\\  
+      \midrule 
+      WWII Destruction                         & -2.295               &   \\   
+                                               & (2.946)              &   \\   
+      east                                     & -3.831               & 0.5231\\   
+                                               & (2.702)              & (0.6543)\\   
+      Housing Inelasticity                     &                      & 0.1578\\   
+                                               &                      & (0.1639)\\   
+       \\
+      Observations                             & 85                   & 85\\  
+      F-test (1st stage)                       & 0.14946              & \\  
+      F-test (1st stage), Housing Inelasticity &                      & 0.14946\\  
+      Wald (2nd stage)                         &                      & 0.92723\\  
+       \\
+      year\_f fixed effects                    & $\checkmark$         & $\checkmark$\\   
+      \bottomrule
+   \end{tabular}
+   
+   \par \raggedright 
+   Clustered (city) standard-errors in parentheses.\\
+   ***: 0.01, **: 0.05, *: 0.1
+\end{table}
+
+
