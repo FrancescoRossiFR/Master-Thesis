@@ -1,6 +1,6 @@
-# Superstar Cities and Housing Supply Inelasticity in Germany
+# Spatial Housing Inequality and Supply Inelasticity in Germany
 
-This repository contains the data pipeline, econometric analysis, and visualization scripts for my Master's Thesis. The study investigates how housing supply constraints drive price divergence across German cities using the "Superstar Cities" framework.
+This repository contains the data pipeline, econometric analysis, and visualization scripts for my Master's Thesis. The study investigates housing supply constraints and price divergence across German cities using the "Superstar Cities" framework.
 
 ## Project Structure
 
@@ -26,8 +26,8 @@ The `master.R` script will:
 
 ## Methodology Summary
 
-- **Identification**: Superstar cities are identified through price-to-quantity growth ratios.
-- **Robustness**: The analysis is performed both including and excluding the COVID-19 period (2020-2023). Uses WWII destruction shares as an instrument for modern housing supply inelasticity.
+- **Identification**: Superstar cities are identified through price-to-quantity growth ratios, following Gyourko, Mayer and Sinai (2013).
+- **Robustness**: The analysis is performed both including and excluding the COVID-19 period (2020-2023). Then, uses WWII destruction shares as an instrument for modern housing supply inelasticity.
 
 ## Key Dependencies
 
