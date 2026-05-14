@@ -147,7 +147,7 @@ models_lagged_excl <- run_superstar_models(superstar_lagged, "excl")
 # Common settings
 
 coef_map <- c(
-  "superstar_ever" = "Superstar (Ever)",
+  "superstar_ever" = "Ever-Superstar City",
   "superstar" = "Superstar",
   "(Intercept)" = "Constant"
 )
@@ -194,7 +194,7 @@ modelsummary(
   add_rows = tribble(
     ~term, ~M1, ~M2, ~M3, ~M4, ~M5, ~M6, ~M7, ~M8,
     "COVID", "Incl", "Incl", "Incl", "Incl", "Excl", "Excl", "Excl", "Excl",
-    "Identification", "Static", "Static", "Lagged", "Lagged", "Static", "Static", "Lagged", "Lagged",
+    "Classification", "Static", "Static", "Lagged", "Lagged", "Static", "Static", "Lagged", "Lagged",
     "Fixed effects", "Period", "Period + City", "Period", "Period + City", "Period", "Period + City", "Period", "Period + City"
   ),
   
@@ -230,7 +230,7 @@ modelsummary(
   
   add_rows = tribble(
     ~term, ~M1, ~M2, ~M3, ~M4,
-    "Identification", "Static", "Static", "Lagged", "Lagged",
+    "Classification", "Static", "Static", "Lagged", "Lagged",
     "Fixed effects", "Period", "Period + City", "Period", "Period + City"
   ),
   
@@ -266,7 +266,7 @@ modelsummary(
   
   add_rows = tribble(
     ~term, ~M1, ~M2, ~M3, ~M4,
-    "Identification", "Static", "Static", "Lagged", "Lagged",
+    "Classification", "Static", "Static", "Lagged", "Lagged",
     "Fixed effects", "Period", "Period + City", "Period", "Period + City"
   ),
   
@@ -302,7 +302,7 @@ modelsummary(
   
   add_rows = tribble(
     ~term, ~M1, ~M2, ~M3, ~M4,
-    "Identification", "Static", "Static", "Lagged", "Lagged",
+    "Classification", "Static", "Static", "Lagged", "Lagged",
     "Fixed effects", "Period", "Period + City", "Period", "Period + City"
   ),
   
