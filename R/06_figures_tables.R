@@ -76,16 +76,16 @@ ggsave("output/figures/desc_index.pdf", p_index, width = 9, height = 6)
 ggsave("output/figures/desc_density.pdf", p_density, width = 8, height = 5)
 
 # 4b. Main Heatmaps (Red)
-combined_main <- (build_heatmap(df_global_incl, "Static Identification", "#d73027") | 
-                    build_heatmap(df_period_incl, "Period-Specific Identification", "#d73027")) +
-  plot_annotation(title = "Superstar Identification (Full Sample)", tag_levels = "A")
+combined_main <- (build_heatmap(df_global_incl, "Static Classification", "#d73027") | 
+                    build_heatmap(df_period_incl, "Period-Specific Classification", "#d73027")) +
+  plot_annotation(title = "Superstar Classification", tag_levels = "A")
 
 ggsave("output/figures/heatmaps_main.pdf", combined_main, width = 10, height = 7)
 
 # 4c. Appendix Heatmaps (Blue)
-combined_app <- (build_heatmap(df_global_excl, "Static Identification", "#2c7fb8") | 
-                   build_heatmap(df_period_excl, "Period-Specific Identification", "#2c7fb8")) +
-  plot_annotation(title = "Superstar Identification (Excluding COVID)", tag_levels = "A")
+combined_app <- (build_heatmap(df_global_excl, "Static Classification", "#2c7fb8") | 
+                   build_heatmap(df_period_excl, "Period-Specific Classification", "#2c7fb8")) +
+  plot_annotation(title = "Superstar Classification (Excluding COVID)", tag_levels = "A")
 
 ggsave("output/figures/heatmaps_appendix.pdf", combined_app, width = 10, height = 7)
 
