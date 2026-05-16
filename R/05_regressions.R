@@ -160,29 +160,31 @@ stars <- c('+'=.1, '*'=.05, '**'=.01, '***'=.001)
 modelsummary(
   
   list(
-    "Static Pooled (Incl)" = models_static_incl$hv_pooled,
-    "Static Time (Incl)"   = models_static_incl$hv_timevarying,
-    "Lagged Pooled (Incl)" = models_lagged_incl$hv_pooled,
-    "Lagged Time (Incl)"   = models_lagged_incl$hv_timevarying,
     
-    "Static Pooled (Excl)" = models_static_excl$hv_pooled,
-    "Static Time (Excl)"   = models_static_excl$hv_timevarying,
-    "Lagged Pooled (Excl)" = models_lagged_excl$hv_pooled,
-    "Lagged Time (Excl)"   = models_lagged_excl$hv_timevarying
+    "Static Pooled (Incl)"  = models_static_incl$hv_pooled,
+    "Lagged Pooled (Incl)"  = models_lagged_incl$hv_pooled,
+    "Static City FE (Incl)" = models_static_incl$hv_timevarying,
+    "Lagged City FE (Incl)" = models_lagged_incl$hv_timevarying,
+    
+    "Static Pooled (Excl)"  = models_static_excl$hv_pooled,
+    "Lagged Pooled (Excl)"  = models_lagged_excl$hv_pooled,
+    "Static City FE (Excl)" = models_static_excl$hv_timevarying,
+    "Lagged City FE (Excl)" = models_lagged_excl$hv_timevarying
   ),
   
   estimate = "{estimate}{stars}",
   statistic = "({std.error})",
   
   vcov = list(
+    
     cluster_se(models_static_incl$hv_pooled, ~city),
-    cluster_se(models_static_incl$hv_timevarying, ~city),
     cluster_se(models_lagged_incl$hv_pooled, ~city),
+    cluster_se(models_static_incl$hv_timevarying, ~city),
     cluster_se(models_lagged_incl$hv_timevarying, ~city),
     
     cluster_se(models_static_excl$hv_pooled, ~city),
-    cluster_se(models_static_excl$hv_timevarying, ~city),
     cluster_se(models_lagged_excl$hv_pooled, ~city),
+    cluster_se(models_static_excl$hv_timevarying, ~city),
     cluster_se(models_lagged_excl$hv_timevarying, ~city)
   ),
   
@@ -194,8 +196,8 @@ modelsummary(
   add_rows = tribble(
     ~term, ~M1, ~M2, ~M3, ~M4, ~M5, ~M6, ~M7, ~M8,
     "COVID", "Incl", "Incl", "Incl", "Incl", "Excl", "Excl", "Excl", "Excl",
-    "Classification", "Static", "Static", "Lagged", "Lagged", "Static", "Static", "Lagged", "Lagged",
-    "Fixed effects", "Period", "Period + City", "Period", "Period + City", "Period", "Period + City", "Period", "Period + City"
+    "Classification", "Static", "Lagged", "Static", "Lagged", "Static", "Lagged", "Static", "Lagged",
+    "Fixed effects", "Period", "Period", "Period + City", "Period + City", "Period", "Period", "Period + City", "Period + City"
   ),
   
   output = "output/tables/house_prices_full.tex"
@@ -205,35 +207,41 @@ modelsummary(
 # TABLE 2: INCOME RELATIVE
 
 modelsummary(
-  
   list(
     "Static Pooled" = models_static_incl$income_rel_pooled,
-    "Static Time"   = models_static_incl$income_rel_timevarying,
     "Lagged Pooled" = models_lagged_incl$income_rel_pooled,
-    "Lagged Time"   = models_lagged_incl$income_rel_timevarying
-  ),
+    
+    "Static City FE" = models_static_incl$income_rel_timevarying,
+    "Lagged City FE" = models_lagged_incl$income_rel_timevarying
+    ),
   
   estimate = "{estimate}{stars}",
   statistic = "({std.error})",
   
   vcov = list(
     cluster_se(models_static_incl$income_rel_pooled, ~city),
-    cluster_se(models_static_incl$income_rel_timevarying, ~city),
     cluster_se(models_lagged_incl$income_rel_pooled, ~city),
+    
+    cluster_se(models_static_incl$income_rel_timevarying, ~city),
     cluster_se(models_lagged_incl$income_rel_timevarying, ~city)
-),
+  ),
   
   coef_map = coef_map,
   stars = stars,
-  
-  gof_map = c("nobs", "rmse"),
+  gof_map = c("nobs", "adj.r.squared"),
   
   add_rows = tribble(
-    ~term, ~M1, ~M2, ~M3, ~M4,
-    "Classification", "Static", "Static", "Lagged", "Lagged",
-    "Fixed effects", "Period", "Period + City", "Period", "Period + City"
+    ~term,
+    ~`Static Pooled`,
+    ~`Lagged Pooled`,
+    ~`Static City FE`,
+    ~`Lagged City FE`,
+    
+    "Classification",
+    "Static", "Lagged", "Static", "Lagged",
+    
+    "Fixed effects", "Period", "Period", "Period + City", "Period + City"
   ),
-  
   output = "output/tables/income_relative.tex"
 )
 
@@ -241,12 +249,11 @@ modelsummary(
 # TABLE 3: INCOME DISPERSION
 
 modelsummary(
-  
   list(
     "Static Pooled" = models_static_incl$income_disp_pooled,
-    "Static Time"   = models_static_incl$income_disp_timevarying,
     "Lagged Pooled" = models_lagged_incl$income_disp_pooled,
-    "Lagged Time"   = models_lagged_incl$income_disp_timevarying
+    "Static City FE" = models_static_incl$income_disp_timevarying,
+    "Lagged City FE" = models_lagged_incl$income_disp_timevarying
   ),
   
   estimate = "{estimate}{stars}",
@@ -254,20 +261,23 @@ modelsummary(
   
   vcov = list(
     cluster_se(models_static_incl$income_disp_pooled, ~city),
-    cluster_se(models_static_incl$income_disp_timevarying, ~city),
     cluster_se(models_lagged_incl$income_disp_pooled, ~city),
+    cluster_se(models_static_incl$income_disp_timevarying, ~city),
     cluster_se(models_lagged_incl$income_disp_timevarying, ~city)
   ),
   
   coef_map = coef_map,
   stars = stars,
-  
-  gof_map = c("nobs", "rmse"),
-  
+  gof_map = c("nobs", "adj.r.squared"),
   add_rows = tribble(
-    ~term, ~M1, ~M2, ~M3, ~M4,
-    "Classification", "Static", "Static", "Lagged", "Lagged",
-    "Fixed effects", "Period", "Period + City", "Period", "Period + City"
+    ~term,
+    ~`Static Pooled`,
+    ~`Lagged Pooled`,
+    ~`Static City FE`,
+    ~`Lagged City FE`,
+    "Classification",
+    "Static", "Lagged", "Static", "Lagged",
+    "Fixed effects", "Period", "Period", "Period + City", "Period + City"
   ),
   
   output = "output/tables/income_dispersion.tex"
@@ -277,34 +287,113 @@ modelsummary(
 # TABLE 4: MEAN INCOME
 
 modelsummary(
-  
   list(
     "Static Pooled" = models_static_incl$income_mean_pooled,
-    "Static Time"   = models_static_incl$income_mean_timevarying,
     "Lagged Pooled" = models_lagged_incl$income_mean_pooled,
-    "Lagged Time"   = models_lagged_incl$income_mean_timevarying
+    "Static City FE" = models_static_incl$income_mean_timevarying,
+    "Lagged City FE" = models_lagged_incl$income_mean_timevarying
   ),
   
   estimate = "{estimate}{stars}",
   statistic = "({std.error})",
-  
   vcov = list(
     cluster_se(models_static_incl$income_mean_pooled, ~city),
-    cluster_se(models_static_incl$income_mean_timevarying, ~city),
     cluster_se(models_lagged_incl$income_mean_pooled, ~city),
+    cluster_se(models_static_incl$income_mean_timevarying, ~city),
     cluster_se(models_lagged_incl$income_mean_timevarying, ~city)
   ),
   
   coef_map = coef_map,
   stars = stars,
-  
   gof_map = c("nobs", "rmse"),
-  
   add_rows = tribble(
-    ~term, ~M1, ~M2, ~M3, ~M4,
-    "Classification", "Static", "Static", "Lagged", "Lagged",
-    "Fixed effects", "Period", "Period + City", "Period", "Period + City"
+    ~term,
+    ~`Static Pooled`,
+    ~`Lagged Pooled`,
+    ~`Static City FE`,
+    ~`Lagged City FE`,
+    "Classification",
+    "Static", "Lagged", "Static", "Lagged",
+    "Fixed effects", "Period", "Period", "Period + City", "Period + City"
   ),
   
   output = "output/tables/income_mean.tex"
+)
+
+#############################################################
+# DE-MEAN ATTEMPT
+#############################################################
+library(ggplot2)
+
+############################################################
+# Use lagged classification data
+
+fe_plot <- superstar_lagged %>%
+  
+  filter(
+    !is.na(growth_window),
+    growth_window != "1995-1999"
+  ) %>%
+  
+  mutate(
+    city = as.factor(city),
+    growth_window = as.factor(growth_window),
+    log_value = log(value)
+  ) %>%
+  
+  group_by(city) %>%
+  
+  mutate(
+    demeaned_log_value =
+      log_value - mean(log_value, na.rm = TRUE)
+  ) %>%
+  
+  ungroup()
+
+############################################################
+# Plot
+
+p_fe <- ggplot(
+  fe_plot,
+  aes(
+    x = growth_window,
+    y = demeaned_log_value,
+    group = city,
+    color = factor(superstar)
+  )
+) +
+  
+  geom_line() +
+  
+  geom_point(size = 2) +
+  
+  facet_wrap(~city) +
+  
+  labs(
+    title =
+      "Within-City Deviations in Apartment Prices",
+    
+    subtitle =
+      "Highlighted periods indicate Superstar classifications",
+    
+    x = "Period",
+    
+    y = "Demeaned Log Apartment Prices",
+    
+    color = "Superstar"
+  ) +
+  
+  theme_minimal()
+
+############################################################
+# Save figure
+
+ggsave(
+  filename =
+    "output/figures/demeaned_prices_fe.pdf",
+  
+  plot = p_fe,
+  
+  width = 12,
+  height = 8
 )
